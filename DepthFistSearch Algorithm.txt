@@ -1,0 +1,40 @@
+DEPTH FIRST TREE TRAVERSAL ALGORITHMG  
+
+Depth-first search algorithm started the search from the root element and ensures that a vertex is not visited twice.Therefore , the we must find a means of keeping track of the vertices we have visited. 
+
+USAGE : It can be used to find the longest/shortest path in a graph
+
+STEP:
+step 1: Visit the root element
+step 2: Visit the left element(if left is preferred to right)
+step 3: Visit the right element
+
+In recursive approach, the we go as far as possible from the given starting node searching for the target. In case we get to a node that has no successors, we get back (typically this is done recursively) and we continue with the last vertex that isn’t visited. 
+
+In the iterative approach with sample below, all elements are inserted into the stack
+
+//source : Tree to traverse
+//stack: stack to store the nodes to visit
+//V: array of visited vertex	  
+DFS(source)
+	{
+	  stack <- new stack
+	  visited <- {} // empty set
+	  stack.push(source)
+	  while (s is not empty)
+		{
+			current <- stack.pop()
+			if (current is in visited)
+				{
+					continue
+				}
+			visited.add(current)
+			print(current)
+			for each node v such that (current,v) is an edge
+				{
+					stack.push(v)
+				}
+		}
+	}
+	
+	

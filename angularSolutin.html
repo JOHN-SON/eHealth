@@ -1,0 +1,77 @@
+<html ng-app="app">
+<body>
+<div ng-controller="AppCtrl">
+  <button ng-click="add()">Add</button>
+  <ul>
+    <li ng-repeat="doc in docs">
+      <span ng-bind="doc"></span>
+    </li>
+  </ul>
+</div>
+<script src="https://code.angularjs.org/1.2.22/angular.js"></script>
+<script src="https://cdn.jsdelivr.net/pouchdb/2.2.3/pouchdb.js"></script>
+<script src="https://rawgit.com/angular-pouchdb/angular-pouchdb/master/angular-pouchdb.js"></script>
+<script>
+  angular.module('app', ['pouchdb'])
+  .controller('AppCtrl', function($scope, PouchDB) {
+    var db = new PouchDB('ToDo');
+
+
+	var todo = {
+	  _id: new Date().toISOString(),
+	  title: 'Go to school',
+	  completed: false
+	};
+	$scope.addToDo = function (){
+	db.put(todo, function (err, result) {
+		console.log('Successfully saved a todo!', result.id);
+		db.allDocs({ include_docs: true, descending: true }, function (err, result) {
+		  console.log('fetched', result.rows.length, 'items');
+		  console.log(result.rows);
+		});
+	  });
+	
+	
+  }));
+  //Unit Test using
+  var mockTodo, mockPouchDB;
+var mockPouchDB = function(name) {
+    this.name = name;
+    this.post = function(newTodo, successCb, errorCb) {
+        var promise = new Promise(function(successCb, errorCb) {
+            newTodo._id = 2;
+            successCb(newTodo);
+        });
+        return promise;
+    };
+}
+
+beforeEach(function() {
+    module(function($provide) {
+        $provide.value('Pouch', mockPouchDB);
+    });
+    angular.mock.inject(function($injector) {
+        mockTodo = $injector.get('Todo');
+    });
+});
+
+describe('Todo create function', function() {
+    it('should create a new Todo', inject(function(Todo) {
+        var result = mockTodo.create({
+            name: "Testing"
+        },
+        function(response) {
+            
+            expect(response._id).toBe(2);
+            expect(response.name).toBe('Testing');
+           }, function(err) {
+
+        });
+		done();
+    }));
+});
+</script>
+</body>
+</html>
+
+
